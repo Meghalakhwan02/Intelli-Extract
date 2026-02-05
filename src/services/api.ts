@@ -1,9 +1,10 @@
 import type { ApiResponse, ExtractionResult } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-console.log(import.meta.env.VITE_API_BASE_URL);
+
 
 export const uploadDocument = async (file: File, docType: string): Promise<ExtractionResult[]> => {
+  console.log('uploadDocument called with:', { file: file.name, docType });
   const formData = new FormData();
   formData.append('file', file);
   formData.append('doc_type', docType);
@@ -16,7 +17,7 @@ export const uploadDocument = async (file: File, docType: string): Promise<Extra
       },
       body: formData,
     });
-console.log(import.meta.env.VITE_API_BASE_URL);
+    console.log(import.meta.env.VITE_API_BASE_URL);
 
     if (!response.ok) {
       throw new Error(`API error: ${response.statusText}`);
