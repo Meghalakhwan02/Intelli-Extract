@@ -1,7 +1,7 @@
 import type { ApiResponse, ExtractionResult } from '../types';
 
-const API_BASE_URL = window.__ENV__?.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "http://modelcmpr-teamsync.apps.lab.ocp.lan/api/v1/compare";
-// const API_BASE_URL = "http://172.168.1.205:31192/api/v1/compare"
+const API_BASE_URL = "/api/v1/compare";
+
 export const uploadDocument = async (file: File, docType: string): Promise<ExtractionResult[]> => {
   console.log('uploadDocument called with:', { file: file.name, docType });
   const formData = new FormData();
