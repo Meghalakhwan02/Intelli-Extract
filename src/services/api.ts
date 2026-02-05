@@ -8,7 +8,7 @@ export const uploadDocument = async (file: File, docType: string): Promise<Extra
   formData.append('doc_type', docType);
 
   try {
-    const response = await fetch(`${API_BASE_URL}/compare`, {
+    const response = await fetch(`${API_BASE_URL}`, {
       method: 'POST',
       headers: {
         'accept': 'application/json',
