@@ -1,6 +1,6 @@
 import type { ApiResponse, ExtractionResult } from '../types';
 
-const API_BASE_URL = 'http://11.0.0.33:8090/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const uploadDocument = async (file: File, docType: string): Promise<ExtractionResult[]> => {
     const formData = new FormData();

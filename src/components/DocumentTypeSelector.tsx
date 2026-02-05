@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Paper, Typography, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { motion } from 'framer-motion';
 import DescriptionIcon from '@mui/icons-material/Description';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
