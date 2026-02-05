@@ -13,12 +13,17 @@ import {
 import { motion } from 'framer-motion';
 import type { ExtractionTableProps } from '../types';
 
-const getScoreStyle = (score: number) => {
-    if (score >= 0.95) return {
+const getScoreStyle = (score: any) => {
+    let numericScore = score;
+    if (typeof score === 'string' && score.includes('%')) {
+        numericScore = parseFloat(score) / 100;
+    }
+
+    if (numericScore >= 0.95) return {
         background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', // Emerald
         boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
     };
-    if (score >= 0.85) return {
+    if (numericScore >= 0.85) return {
         background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', // Amber
         boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)',
     };

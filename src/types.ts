@@ -9,15 +9,12 @@ export interface ExtractionResult {
   m1: string;
   m2: string;
   m3: string;
-  score: number;
+  score: string;
 }
 
 // API Response Types
 export interface ConfidenceScore {
-  legacy_ocr_regex: number;
-  llama_maverick_17b?: number;
-  llama_11b?: number;
-  Cumulative_Score: number;
+  consensus_score: string;
 }
 
 export interface ExtractionValues {
@@ -33,9 +30,9 @@ export interface ApiResponse {
       [key: string]: ConfidenceScore;
     };
     extractions: {
-      legacy_ocr_regex: ExtractionValues;
-      llama_maverick_17b: ExtractionValues;
-      llama_11b: ExtractionValues;
+      M1: ExtractionValues;
+      M2: ExtractionValues;
+      M3: ExtractionValues;
     };
   };
 }
