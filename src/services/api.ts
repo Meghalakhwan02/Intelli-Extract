@@ -2,7 +2,7 @@ import type { ApiResponse, ExtractionResult } from '../types';
 
 // const API_BASE_URL = "http://modelcmpr-teamsync.apps.lab.ocp.lan/api/v1/compare";
 const API_BASE_URL = "http://172.168.1.205:31192/api/v1/compare"
-export const uploadDocument = async (file: File, docType: string): Promise<ExtractionResult[]> => {
+export const uploadDocument = async (file: File, docType: string): Promise<{ results: ExtractionResult[], rawText: string }> => {
   console.log('uploadDocument called with:', { file: file.name, docType });
   const formData = new FormData();
   formData.append('file', file);
@@ -22,7 +22,9 @@ export const uploadDocument = async (file: File, docType: string): Promise<Extra
     }
 
     const data: ApiResponse = await response.json(); //Get the raw json
-    return transformApiResponse(data); // Transform it for the UI
+    const results = transformApiResponse(data); // Transform it for the UI
+    const rawText = data?.results?.extractions?.M1?.raw_text || '';
+    return { results, rawText: String(rawText) };
   } catch (error) {
     console.error('Extraction failed:', error);
     throw error;
@@ -48,7 +50,7 @@ const transformApiResponse = (data: ApiResponse): ExtractionResult[] => {
   const { confidence_matrix, extractions } = data.results;
 
   return Object.keys(confidence_matrix)
-    .filter(key => key !== 'raw_text') // Exclude raw_text from table
+    // .filter(key => key !== 'raw_text') // Exclude raw_text from table
     .map(key => {
       const score = confidence_matrix[key].consensus_score;
 

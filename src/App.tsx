@@ -12,6 +12,7 @@ function App() {
   const [selectedType, setSelectedType] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [extractionResults, setExtractionResults] = useState<ExtractionResult[]>([]);
+  const [rawText, setRawText] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,6 +21,7 @@ function App() {
     // Clear uploaded file and results when changing document type
     setUploadedFile(null);
     setExtractionResults([]);
+    setRawText('');
     setError(null);
   };
 
@@ -29,13 +31,16 @@ function App() {
       setIsProcessing(true);
       setError(null);
       setExtractionResults([]); // Clear previous results
+      setRawText(''); // Clear previous raw text
       try {
-        const results = await uploadDocument(file, selectedType);
+        const { results, rawText } = await uploadDocument(file, selectedType);
         setExtractionResults(results);
+        setRawText(rawText);
       } catch (err) {
         console.error(err);
         setError('Failed to process document. Please try again.');
         setExtractionResults([]);
+        setRawText('');
       } finally {
         setIsProcessing(false);
       }
@@ -135,6 +140,7 @@ function App() {
                   selectedType={selectedType}
                   data={extractionResults}
                   isLoading={isProcessing}
+                  rawText={rawText}
                 />
               </motion.div>
             </Box>

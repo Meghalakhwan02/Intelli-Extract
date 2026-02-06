@@ -33,7 +33,7 @@ const getScoreStyle = (score: any) => {
     };
 };
 
-export default function ExtractionTable({ selectedType, data = [], isLoading = false }: ExtractionTableProps) {
+export default function ExtractionTable({ selectedType, data = [], isLoading = false, rawText = '' }: ExtractionTableProps) {
     return (
         <Paper
             elevation={3}
@@ -43,13 +43,14 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                 display: 'flex',
                 flexDirection: 'column',
                 background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)',
+                overflow: 'auto',
             }}
         >
             <Typography variant="h5" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
                 Extraction Results
             </Typography>
 
-            <TableContainer sx={{ flex: 1, overflow: 'auto', maxHeight: '100%' }}>
+            <TableContainer sx={{ flex: 1, overflow: 'auto', maxHeight: '60%', mb: rawText ? 3 : 0 }}>
                 <Table stickyHeader>
                     <TableHead>
                         <TableRow>
@@ -188,6 +189,52 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            {/* Raw Text Section */}
+            {rawText && (
+                <Box
+                    component={motion.div}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    sx={{
+                        mt: 2,
+                        p: 2,
+                        borderRadius: 2,
+                        background: 'rgba(15, 23, 42, 0.6)',
+                        border: '1px solid rgba(99, 102, 241, 0.3)',
+                        maxHeight: '35%',
+                        overflow: 'auto',
+                    }}
+                >
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            mb: 1.5,
+                            fontWeight: 700,
+                            color: '#ec4899',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            fontSize: '0.75rem',
+                        }}
+                    >
+                        Raw Text (M1)
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            fontFamily: 'monospace',
+                            fontSize: '0.85rem',
+                            lineHeight: 1.6,
+                            color: 'rgba(255, 255, 255, 0.85)',
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-word',
+                        }}
+                    >
+                        {rawText}
+                    </Typography>
+                </Box>
+            )}
         </Paper>
     );
 }

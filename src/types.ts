@@ -53,4 +53,5 @@ export interface ExtractionTableProps {
   selectedType: string;
   data?: ExtractionResult[];
   isLoading?: boolean;
+  rawText?: string;
 }
