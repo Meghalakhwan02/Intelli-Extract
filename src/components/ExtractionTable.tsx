@@ -50,7 +50,7 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                 Extraction Results
             </Typography>
 
-            <TableContainer sx={{ flex: 1, overflow: 'auto', maxHeight: '60%', mb: rawText ? 3 : 0 }}>
+            <TableContainer sx={{ flex: 1, overflow: 'auto', maxHeight: '70%', mb: rawText ? 3 : 0 }}>
                 <Table stickyHeader>
                     <TableHead>
                         <TableRow>
@@ -203,7 +203,7 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                         borderRadius: 2,
                         background: 'rgba(15, 23, 42, 0.6)',
                         border: '1px solid rgba(99, 102, 241, 0.3)',
-                        maxHeight: '35%',
+                        maxHeight: '25%',
                         overflow: 'auto',
                     }}
                 >

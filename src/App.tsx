@@ -100,7 +100,7 @@ function App() {
             }}
           >
             {/* Left Panel - Document Type Selector */}
-            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 25%' } }}>
+            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 20%' } }}>
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -112,7 +112,7 @@ function App() {
             </Box>
 
             {/* Center Panel - Upload & Preview */}
-            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 30%' } }}>
+            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 25%' } }}>
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -129,7 +129,7 @@ function App() {
             </Box>
 
             {/* Right Panel - Extraction Table */}
-            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 45%' } }}>
+            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 55%' } }}>
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
