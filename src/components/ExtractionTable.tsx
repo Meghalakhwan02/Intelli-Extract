@@ -76,7 +76,7 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                                     top: 0,
                                 }}
                             >
-                                M1
+                                OCR
                             </TableCell>
                             <TableCell
                                 sx={{
@@ -88,7 +88,7 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                                     top: 0,
                                 }}
                             >
-                                M2
+                                Vision 1
                             </TableCell>
                             <TableCell
                                 sx={{
@@ -100,7 +100,7 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                                     top: 0,
                                 }}
                             >
-                                M3
+                                Vision 2
                             </TableCell>
                             <TableCell
                                 align="center"

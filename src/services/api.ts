@@ -2,11 +2,12 @@ import type { ApiResponse, ExtractionResult } from '../types';
 
 // const API_BASE_URL = "http://modelcmpr-teamsync.apps.lab.ocp.lan/api/v1/compare";
 const API_BASE_URL = "http://172.168.1.205:31192/api/v1/compare"
-export const uploadDocument = async (file: File, docType: string): Promise<{ results: ExtractionResult[], rawText: string }> => {
-  console.log('uploadDocument called with:', { file: file.name, docType });
+export const uploadDocument = async (file: File, docType: string, language: string): Promise<{ results: ExtractionResult[], rawText: string }> => {
+  // console.log('uploadDocument called with:', { file: file.name, docType, language });
   const formData = new FormData();
   formData.append('file', file);
   formData.append('doc_type', docType);
+  formData.append('language', language);
 
   try {
     const response = await fetch(`${API_BASE_URL}`, {

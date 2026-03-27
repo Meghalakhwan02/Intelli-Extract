@@ -10,6 +10,7 @@ import type { ExtractionResult } from './types';
 
 function App() {
   const [selectedType, setSelectedType] = useState<string>('');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [extractionResults, setExtractionResults] = useState<ExtractionResult[]>([]);
   const [rawText, setRawText] = useState<string>('');
@@ -18,7 +19,6 @@ function App() {
 
   const handleTypeSelect = (typeId: string) => {
     setSelectedType(typeId);
-    // Clear uploaded file and results when changing document type
     setUploadedFile(null);
     setExtractionResults([]);
     setRawText('');
@@ -27,13 +27,13 @@ function App() {
 
   const handleFileUpload = async (file: File | null) => {
     setUploadedFile(file);
-    if (file && selectedType) {
+    if (file && selectedType && selectedLanguage) {
       setIsProcessing(true);
       setError(null);
-      setExtractionResults([]); // Clear previous results
-      setRawText(''); // Clear previous raw text
+      setExtractionResults([]);
+      setRawText('');
       try {
-        const { results, rawText } = await uploadDocument(file, selectedType);
+        const { results, rawText } = await uploadDocument(file, selectedType, selectedLanguage);
         setExtractionResults(results);
         setRawText(rawText);
       } catch (err) {
@@ -47,9 +47,7 @@ function App() {
     }
   };
 
-  const handleCloseError = () => {
-    setError(null);
-  };
+  const handleCloseError = () => setError(null);
 
   return (
     <ThemeProvider theme={theme}>
@@ -57,18 +55,30 @@ function App() {
       <Box
         sx={{
           minHeight: '100vh',
+          height: { xs: 'auto', md: '100vh' },
+          overflow: { xs: 'auto', md: 'hidden' },
           background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-          py: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          py: 3,
         }}
       >
-        <Container maxWidth="xl">
+        <Container 
+          maxWidth="xl" 
+          sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            flex: 1, 
+            overflow: { xs: 'visible', md: 'hidden' } 
+          }}
+        >
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Box sx={{ textAlign: 'center', mb: 3 }}>
               <Typography
                 variant="h4"
                 component="h1"
@@ -78,41 +88,47 @@ function App() {
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  mb: 1,
+                  mb: 0.5,
                 }}
               >
                 Intelli Extract
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                AI-Powered Document Extraction & Verification
+                AI-Powered Document Extraction &amp; Verification
               </Typography>
             </Box>
           </motion.div>
 
-          {/* Main Content - Flexbox Layout */}
+          {/* Main Content - 3 panel flex layout, fills remaining height */}
           <Box
             sx={{
               display: 'flex',
               gap: 3,
-              // Responsive height: auto for mobile scrolling, fixed for desktop layout
-              height: { xs: 'auto', md: 'calc(100vh - 180px)' },
+              flex: 1,
+              overflow: { xs: 'visible', md: 'hidden' },
               flexDirection: { xs: 'column', md: 'row' },
+              pb: { xs: 4, md: 0 },
             }}
           >
-            {/* Left Panel - Document Type Selector */}
-            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 20%' } }}>
+            {/* Left Panel — Language + Document Type Selector */}
+            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 22%' }, minWidth: 0, overflow: 'hidden', height: { xs: '450px', md: 'auto' } }}>
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
                 style={{ height: '100%' }}
               >
-                <DocumentTypeSelector selectedType={selectedType} onSelectType={handleTypeSelect} />
+                <DocumentTypeSelector
+                  selectedType={selectedType}
+                  onSelectType={handleTypeSelect}
+                  selectedLanguage={selectedLanguage}
+                  onSelectLanguage={setSelectedLanguage}
+                />
               </motion.div>
             </Box>
 
-            {/* Center Panel - Upload & Preview */}
-            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 25%' } }}>
+            {/* Center Panel — Upload & Preview */}
+            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 25%' }, minWidth: 0, overflow: 'hidden', minHeight: { xs: '350px', md: 'auto' } }}>
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -121,6 +137,7 @@ function App() {
               >
                 <UploadPreview
                   selectedType={selectedType}
+                  selectedLanguage={selectedLanguage}
                   uploadedFile={uploadedFile}
                   onFileUpload={handleFileUpload}
                   isProcessing={isProcessing}
@@ -128,8 +145,8 @@ function App() {
               </motion.div>
             </Box>
 
-            {/* Right Panel - Extraction Table */}
-            <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 55%' } }}>
+            {/* Right Panel — Extraction Table */}
+            <Box sx={{ flex: { xs: '1 1 auto', md: '1 1 0%' }, minWidth: 0, overflow: 'hidden', minHeight: { xs: '400px', md: 'auto' } }}>
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}

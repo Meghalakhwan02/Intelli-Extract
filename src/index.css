@@ -1,22 +1,21 @@
 /* Custom Scrollbar Styles */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+*::-webkit-scrollbar, ::-webkit-scrollbar {
+  width: 2px !important;
+  height: 2px !important;
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
-  border-radius: 10px;
+*::-webkit-scrollbar-track, ::-webkit-scrollbar-track {
+  background: transparent !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #a855f7 0%, #ec4899 100%);
-  border-radius: 10px;
+*::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-radius: 2px !important;
   transition: background 0.3s ease;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #9333ea 0%, #db2777 100%);
+*::-webkit-scrollbar-thumb:hover, ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Firefox scrollbar */

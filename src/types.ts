@@ -40,10 +40,13 @@ export interface ApiResponse {
 export interface DocumentTypeSelectorProps {
   selectedType: string;
   onSelectType: (typeId: string) => void;
+  selectedLanguage: string;
+  onSelectLanguage: (lang: string) => void;
 }
 
 export interface UploadPreviewProps {
   selectedType: string;
+  selectedLanguage: string;
   uploadedFile: File | null;
   onFileUpload: (file: File | null) => void;
   isProcessing?: boolean;

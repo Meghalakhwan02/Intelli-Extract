@@ -4,7 +4,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import type { UploadPreviewProps } from '../types';
 import { useRef } from 'react';
 
-export default function UploadPreview({ selectedType, uploadedFile, onFileUpload, isProcessing = false }: UploadPreviewProps) {
+export default function UploadPreview({ selectedType, selectedLanguage, uploadedFile, onFileUpload, isProcessing = false }: UploadPreviewProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,7 +96,13 @@ export default function UploadPreview({ selectedType, uploadedFile, onFileUpload
                                 No document uploaded
                             </Typography>
                             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                Select a {selectedType || 'document type'} and upload
+                                {!selectedType && !selectedLanguage
+                                    ? 'Select a language and document type to upload'
+                                    : !selectedLanguage
+                                    ? 'Select a language first'
+                                    : !selectedType
+                                    ? 'Select a document type to upload'
+                                    : `Upload a ${selectedType} document`}
                             </Typography>
                         </motion.div>
                     )}
@@ -119,7 +125,7 @@ export default function UploadPreview({ selectedType, uploadedFile, onFileUpload
                     size="large"
                     startIcon={!isProcessing && <CloudUploadIcon />}
                     onClick={handleUploadClick}
-                    disabled={!selectedType || isProcessing}
+                    disabled={!selectedType || !selectedLanguage || isProcessing}
                     sx={{
                         py: 1.5,
                         fontSize: '1rem',
