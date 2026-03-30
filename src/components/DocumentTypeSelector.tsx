@@ -9,6 +9,8 @@ import SchoolIcon from '@mui/icons-material/School';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import BoltIcon from '@mui/icons-material/Bolt';
 import LanguageIcon from '@mui/icons-material/Language';
+import ContactPageIcon from '@mui/icons-material/ContactPage';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import type { DocumentTypeSelectorProps, DocumentType } from '../types';
 
 const documentTypes: DocumentType[] = [
@@ -19,6 +21,8 @@ const documentTypes: DocumentType[] = [
     { id: 'marksheet', name: 'Marksheet', icon: 'marksheet' },
     { id: 'waterbill', name: 'Water Bill', icon: 'waterbill' },
     { id: 'electricitybill', name: 'Electricity Bill', icon: 'electricitybill' },
+    { id: 'rationcard', name: 'Ration Card', icon: 'rationcard' },
+    { id: 'newpanform', name: 'New PAN Form', icon: 'newpanform' },
 ];
 
 const LANGUAGES = [
@@ -45,6 +49,8 @@ const getIcon = (iconType: string) => {
         case 'marksheet': return <SchoolIcon />;
         case 'waterbill': return <WaterDropIcon />;
         case 'electricitybill': return <BoltIcon />;
+        case 'rationcard': return <ContactPageIcon />;
+        case 'newpanform': return <AssignmentIndIcon />;
         default: return <DescriptionIcon />;
     }
 };
