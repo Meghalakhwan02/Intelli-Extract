@@ -1,10 +1,23 @@
-import { Box, Paper, Typography, Button } from '@mui/material';
+import { Box, Paper, Typography, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import type { UploadPreviewProps } from '../types';
 import { useRef } from 'react';
+import { LANGUAGES, documentTypes } from './DocumentTypeSelector';
 
-export default function UploadPreview({ selectedType, selectedLanguage, uploadedFile, onFileUpload, isProcessing = false }: UploadPreviewProps) {
+export default function UploadPreview({ 
+    title, 
+    selectedType, 
+    onSelectType,
+    selectedLanguage, 
+    onSelectLanguage,
+    uploadedFile, 
+    onFileUpload, 
+    isProcessing = false, 
+    isFixed = false 
+}: UploadPreviewProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,15 +38,60 @@ export default function UploadPreview({ selectedType, selectedLanguage, uploaded
             elevation={3}
             sx={{
                 height: '100%',
-                p: 3,
+                p: 2,
                 display: 'flex',
                 flexDirection: 'column',
                 background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)',
+                boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                backdropFilter: 'blur(4px)',
+                borderRadius: 1.25,
             }}
         >
-            <Typography variant="h5" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
-                Document Preview
+            <Typography variant="h6" gutterBottom sx={{ mb: 1.5, fontWeight: 700, fontSize: '1rem', color: 'primary.light' }}>
+                {title || 'Document Preview'}
             </Typography>
+
+            {/* Selection Dropdowns for non-fixed docs */}
+            {!isFixed && (
+                <Box sx={{ display: 'flex', gap: 1, mb: 1.5 }}>
+                    <FormControl fullWidth size="small">
+                        <InputLabel sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>Language</InputLabel>
+                        <Select
+                            value={selectedLanguage}
+                            label="Language"
+                            onChange={(e) => onSelectLanguage?.(e.target.value)}
+                            sx={{
+                                borderRadius: 1.5,
+                                background: 'rgba(0,0,0,0.2)',
+                                fontSize: '0.85rem',
+                                '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.1)' }
+                            }}
+                        >
+                            {LANGUAGES.map(lang => (
+                                <MenuItem key={lang.value} value={lang.value} sx={{ fontSize: '0.85rem' }}>{lang.label}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    <FormControl fullWidth size="small">
+                        <InputLabel sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>Doc Type</InputLabel>
+                        <Select
+                            value={selectedType}
+                            label="Doc Type"
+                            onChange={(e) => onSelectType?.(e.target.value)}
+                            sx={{
+                                borderRadius: 1.5,
+                                background: 'rgba(0,0,0,0.2)',
+                                fontSize: '0.85rem',
+                            }}
+                        >
+                            {documentTypes.map(type => (
+                                <MenuItem key={type.id} value={type.id} sx={{ fontSize: '0.85rem' }}>{type.name}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+            )}
 
             {/* Preview Area */}
             <Box
@@ -43,14 +101,15 @@ export default function UploadPreview({ selectedType, selectedLanguage, uploaded
                     alignItems: 'center',
                     justifyContent: 'center',
                     border: '2px dashed',
-                    borderColor: uploadedFile ? 'primary.main' : 'rgba(255, 255, 255, 0.2)',
+                    borderColor: uploadedFile ? 'primary.main' : 'rgba(255, 255, 255, 0.1)',
                     borderRadius: 3,
-                    mb: 3,
+                    mb: 1.5,
                     overflow: 'hidden',
                     background: 'rgba(0, 0, 0, 0.2)',
                     position: 'relative',
                     opacity: isProcessing ? 0.7 : 1,
-                    transition: 'opacity 0.3s ease',
+                    transition: 'all 0.3s ease',
+                    minHeight: 80,
                 }}
             >
                 <AnimatePresence mode="wait">
@@ -61,24 +120,58 @@ export default function UploadPreview({ selectedType, selectedLanguage, uploaded
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
                             transition={{ duration: 0.3 }}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
+                            style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '10px' }}
                         >
-                            <img
-                                src={URL.createObjectURL(uploadedFile)}
-                                alt="Uploaded document"
-                                style={{
-                                    maxWidth: '100%',
-                                    maxHeight: '100%',
-                                    objectFit: 'contain',
-                                    borderRadius: '8px',
-                                }}
-                            />
+                            {uploadedFile.type.startsWith('image/') ? (
+                                <img
+                                    src={URL.createObjectURL(uploadedFile)}
+                                    alt="Uploaded document"
+                                    style={{
+                                        maxWidth: '100%',
+                                        maxHeight: '100%',
+                                        objectFit: 'contain',
+                                        borderRadius: '8px',
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                                    }}
+                                />
+                            ) : uploadedFile.type === 'application/pdf' || uploadedFile.name.toLowerCase().endsWith('.pdf') ? (
+                                <Box sx={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
+                                    <iframe
+                                        src={`${URL.createObjectURL(uploadedFile)}#view=FitH&scrollbar=0&toolbar=0&navpanes=0`}
+                                        title="PDF Preview"
+                                        style={{
+                                            width: '100%',
+                                            height: 'calc(100% + 20px)',
+                                            marginTop: '-10px',
+                                            border: 'none',
+                                            borderRadius: '8px',
+                                        }}
+                                    />
+                                    {/* Overlay label */}
+                                    <Box sx={{ 
+                                        position: 'absolute', 
+                                        top: 5, 
+                                        right: 5, 
+                                        background: 'rgba(239, 68, 68, 0.9)', 
+                                        color: 'white', 
+                                        px: 1, 
+                                        py: 0.25, 
+                                        borderRadius: 1,
+                                        fontSize: '0.65rem',
+                                        fontWeight: 800,
+                                        pointerEvents: 'none'
+                                    }}>
+                                        PDF
+                                    </Box>
+                                </Box>
+                            ) : (
+                                <Box sx={{ textAlign: 'center' }}>
+                                    <InsertDriveFileIcon sx={{ fontSize: 60, color: 'primary.light', mb: 1, filter: 'drop-shadow(0 2px 8px rgba(99, 102, 241, 0.4))' }} />
+                                    <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontWeight: 600, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {uploadedFile.name}
+                                    </Typography>
+                                </Box>
+                            )}
                         </motion.div>
                     ) : (
                         <motion.div
@@ -86,23 +179,11 @@ export default function UploadPreview({ selectedType, selectedLanguage, uploaded
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            style={{
-                                textAlign: 'center',
-                                padding: '40px',
-                            }}
+                            style={{ textAlign: 'center', padding: '20px' }}
                         >
-                            <CloudUploadIcon sx={{ fontSize: 80, color: 'rgba(255, 255, 255, 0.3)', mb: 2 }} />
-                            <Typography variant="body1" color="text.secondary">
-                                No document uploaded
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {!selectedType && !selectedLanguage
-                                    ? 'Select a language and document type to upload'
-                                    : !selectedLanguage
-                                    ? 'Select a language first'
-                                    : !selectedType
-                                    ? 'Select a document type to upload'
-                                    : `Upload a ${selectedType} document`}
+                            <CloudUploadIcon sx={{ fontSize: 60, color: 'rgba(255, 255, 255, 0.15)', mb: 1.5 }} />
+                            <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8, fontSize: '0.85rem' }}>
+                                {isFixed ? `Upload ${title}` : 'Drop file or click to select'}
                             </Typography>
                         </motion.div>
                     )}
@@ -113,26 +194,38 @@ export default function UploadPreview({ selectedType, selectedLanguage, uploaded
             <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
                 onChange={handleFileChange}
                 style={{ display: 'none' }}
                 disabled={isProcessing}
             />
-            <motion.div whileHover={{ scale: isProcessing ? 1 : 1.02 }} whileTap={{ scale: isProcessing ? 1 : 0.98 }}>
+            <motion.div 
+                whileHover={{ scale: (isProcessing || (!isFixed && (!selectedType || !selectedLanguage))) ? 1 : 1.02 }} 
+                whileTap={{ scale: (isProcessing || (!isFixed && (!selectedType || !selectedLanguage))) ? 1 : 0.98 }}
+            >
                 <Button
                     variant="contained"
                     fullWidth
-                    size="large"
                     startIcon={!isProcessing && <CloudUploadIcon />}
                     onClick={handleUploadClick}
-                    disabled={!selectedType || !selectedLanguage || isProcessing}
+                    disabled={(!isFixed && (!selectedType || !selectedLanguage)) || isProcessing}
                     sx={{
-                        py: 1.5,
-                        fontSize: '1rem',
+                        py: 1,
+                        borderRadius: 2,
+                        textTransform: 'none',
                         fontWeight: 600,
+                        fontSize: '0.85rem',
+                        boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.39)',
+                        background: 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)',
+                        '&:hover': {
+                            background: 'linear-gradient(135deg, #4f46e5 0%, #db2777 100%)',
+                        },
+                        '&.Mui-disabled': {
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            color: 'rgba(255, 255, 255, 0.3)',
+                        }
                     }}
                 >
-                    {isProcessing ? 'Processing Document...' : (uploadedFile ? 'Change Document' : 'Upload Document')}
+                    {isProcessing ? 'Reading...' : (uploadedFile ? 'Change' : 'Upload')}
                 </Button>
             </motion.div>
         </Paper>

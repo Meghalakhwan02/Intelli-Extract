@@ -19,114 +19,85 @@ const getScoreStyle = (score: any) => {
         numericScore = parseFloat(score) / 100;
     }
 
-    if (numericScore >= 0.95) return {
-        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', // Emerald
-        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
+    if (numericScore >= 0.90) return {
+        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+        boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
     };
-    if (numericScore >= 0.85) return {
-        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', // Amber
-        boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)',
+    if (numericScore >= 0.60) return {
+        background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
+        boxShadow: '0 2px 8px rgba(251, 191, 36, 0.3)',
+    };
+    if (numericScore >= 0.30) return {
+        background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+        boxShadow: '0 2px 8px rgba(249, 115, 22, 0.3)',
     };
     return {
-        background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', // Red
-        boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)',
+        background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)',
     };
 };
 
-export default function ExtractionTable({ selectedType, data = [], isLoading = false, rawText = '' }: ExtractionTableProps) {
+export default function ExtractionTable({ title, selectedType, data = [], isLoading = false, rawText = '' }: ExtractionTableProps) {
     return (
         <Paper
             elevation={3}
             sx={{
-                height: '100%',
-                p: 3,
+                height: { xs: 'auto', lg: '100%' },
+                minHeight: { xs: 350, lg: '100%' },
+                p: 2,
                 display: 'flex',
                 flexDirection: 'column',
                 background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)',
-                overflow: 'auto',
+                overflow: 'hidden',
+                borderRadius: 1.25,
+                boxShadow: '0 4px 20px 0 rgba(0, 0, 0, 0.3)',
             }}
         >
-            <Typography variant="h5" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
-                Extraction Results
+            <Typography variant="subtitle1" sx={{ mb: 1.5, fontWeight: 700, color: 'primary.light', px: 0.5 }}>
+                {title || 'Extraction Results'}
             </Typography>
 
-            <TableContainer sx={{ flex: 1, overflow: 'auto', maxHeight: '70%', mb: rawText ? 3 : 0 }}>
-                <Table stickyHeader>
+            <TableContainer sx={{ 
+                flex: 1, 
+                overflow: 'auto', 
+                mb: rawText ? 2 : 0,
+                '&::-webkit-scrollbar': { width: '4px' },
+                '&::-webkit-scrollbar-track': { background: 'transparent' },
+                '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.1)', borderRadius: '10px' },
+                maxHeight: { xs: 400, lg: 'none' }
+            }}>
+                <Table stickyHeader size="small">
                     <TableHead>
                         <TableRow>
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: '0.95rem',
-                                    backgroundColor: 'rgba(30, 41, 59, 0.98)',
-                                    zIndex: 2,
-                                    position: 'sticky',
-                                    top: 0,
-                                }}
-                            >
-                                Attribute
-                            </TableCell>
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: '0.95rem',
-                                    backgroundColor: 'rgba(30, 41, 59, 0.98)',
-                                    zIndex: 2,
-                                    position: 'sticky',
-                                    top: 0,
-                                }}
-                            >
-                                OCR
-                            </TableCell>
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: '0.95rem',
-                                    backgroundColor: 'rgba(30, 41, 59, 0.98)',
-                                    zIndex: 2,
-                                    position: 'sticky',
-                                    top: 0,
-                                }}
-                            >
-                                Vision 1
-                            </TableCell>
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: '0.95rem',
-                                    backgroundColor: 'rgba(30, 41, 59, 0.98)',
-                                    zIndex: 2,
-                                    position: 'sticky',
-                                    top: 0,
-                                }}
-                            >
-                                Vision 2
-                            </TableCell>
-                            <TableCell
-                                align="center"
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: '0.95rem',
-                                    backgroundColor: 'rgba(30, 41, 59, 0.98)',
-                                    zIndex: 2,
-                                    position: 'sticky',
-                                    top: 0,
-                                }}
-                            >
-                                Score
-                            </TableCell>
+                            {['Attribute', 'OCR', 'V1', 'V2', 'Score'].map((head) => (
+                                <TableCell
+                                    key={head}
+                                    sx={{
+                                        fontWeight: 700,
+                                        fontSize: '0.75rem',
+                                        backgroundColor: '#1e293b',
+                                        color: 'text.secondary',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.05em',
+                                        py: 1,
+                                        px: 1,
+                                        borderBottom: '1px solid rgba(255,255,255,0.1)',
+                                    }}
+                                    align={head === 'Score' ? 'center' : 'left'}
+                                >
+                                    {head}
+                                </TableCell>
+                            ))}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {isLoading ? (
                             <TableRow>
-                                <TableCell colSpan={5} align="center" sx={{ py: 10 }}>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <CircularProgress size={40} thickness={4} sx={{ mb: 2, color: '#ec4899' }} />
-                                        <Typography variant="body1" color="text.secondary">
-                                            Extracting data using AI models...
-                                        </Typography>
-                                    </Box>
+                                <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
+                                    <CircularProgress size={30} thickness={4} sx={{ mb: 1, color: '#ec4899' }} />
+                                    <Typography variant="caption" display="block" color="text.secondary">
+                                        Analyzing...
+                                    </Typography>
                                 </TableCell>
                             </TableRow>
                         ) : data && data.length > 0 ? (
@@ -134,39 +105,31 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                                 <TableRow
                                     key={row.attribute}
                                     component={motion.tr}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.05 }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: index * 0.03 }}
                                     sx={{
-                                        '&:hover': {
-                                            background: 'rgba(99, 102, 241, 0.08)',
-                                            transition: 'background 0.2s ease',
-                                        },
+                                        '&:hover': { background: 'rgba(99, 102, 241, 0.05)' },
+                                        '& td': { borderBottom: '1px solid rgba(255,255,255,0.03)' }
                                     }}
                                 >
-                                    <TableCell sx={{ fontWeight: 600 }}>{row.attribute}</TableCell>
-                                    <TableCell>{row.m1}</TableCell>
-                                    <TableCell>{row.m2}</TableCell>
-                                    <TableCell>{row.m3}</TableCell>
-                                    <TableCell align="center">
+                                    <TableCell sx={{ fontWeight: 600, fontSize: '0.8rem', py: 0.75, px: 1 }}>{row.attribute}</TableCell>
+                                    <TableCell sx={{ fontSize: '0.8rem', py: 0.75, px: 1 }}>{row.m1}</TableCell>
+                                    <TableCell sx={{ fontSize: '0.8rem', py: 0.75, px: 1 }}>{row.m2}</TableCell>
+                                    <TableCell sx={{ fontSize: '0.8rem', py: 0.75, px: 1 }}>{row.m3}</TableCell>
+                                    <TableCell align="center" sx={{ py: 0.75, px: 1 }}>
                                         <Box
-                                            className="shine-effect"
-                                            component={motion.div}
-                                            whileHover={{ scale: 1.05 }}
                                             sx={{
                                                 display: 'inline-flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
-                                                minWidth: 60, // Reduced from 80
-                                                py: 0.5,      // Reduced from 0.75
-                                                px: 1.5,      // Reduced from 2
-                                                borderRadius: '16px', // Reduced from 20px
-                                                fontWeight: 700,      // Reduced from 800
+                                                minWidth: 45,
+                                                py: 0.25,
+                                                px: 1,
+                                                borderRadius: '12px',
+                                                fontWeight: 800,
                                                 color: '#ffffff',
-                                                fontSize: '0.85rem',  // Reduced from 0.9rem
-                                                letterSpacing: '0.01em',
-                                                cursor: 'default',
-                                                transition: 'transform 0.2s',
+                                                fontSize: '0.7rem',
                                                 ...getScoreStyle(row.score)
                                             }}
                                         >
@@ -177,12 +140,10 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={5} align="center" sx={{ py: 8 }}>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: 0.5 }}>
-                                        <Typography variant="body1" color="text.secondary">
-                                            {selectedType ? 'Upload a document to see extracted data' : 'Select a document type to begin'}
-                                        </Typography>
-                                    </Box>
+                                <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
+                                    <Typography variant="caption" color="text.secondary" sx={{ opacity: 0.5 }}>
+                                        {selectedType ? 'Upload document' : 'Select type'}
+                                    </Typography>
                                 </TableCell>
                             </TableRow>
                         )}
@@ -190,43 +151,44 @@ export default function ExtractionTable({ selectedType, data = [], isLoading = f
                 </Table>
             </TableContainer>
 
-            {/* Raw Text Section */}
+            {/* Raw Text Section - even more compact */}
             {rawText && (
                 <Box
                     component={motion.div}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     sx={{
-                        mt: 2,
-                        p: 2,
+                        mt: 1,
+                        p: 1.5,
                         borderRadius: 2,
-                        background: 'rgba(15, 23, 42, 0.6)',
+                        background: 'rgba(0, 0, 0, 0.2)',
                         border: '1px solid rgba(99, 102, 241, 0.3)',
-                        maxHeight: '25%',
+                        height: { xs: 150, lg: 120 },
+                        flexShrink: 0,
                         overflow: 'auto',
+                        '&::-webkit-scrollbar': { width: '4px' },
+                        '&::-webkit-scrollbar-track': { background: 'transparent' },
+                        '&::-webkit-scrollbar-thumb': { background: 'rgba(239, 68, 68, 0.4)', borderRadius: '10px' },
                     }}
                 >
                     <Typography
-                        variant="subtitle2"
+                        variant="caption"
                         sx={{
-                            mb: 1.5,
-                            fontWeight: 700,
+                            mb: 0.5,
+                            display: 'block',
+                            fontWeight: 800,
                             color: '#ec4899',
                             textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                            fontSize: '0.75rem',
                         }}
                     >
-                        Raw Text (M1)
+                        Raw Output
                     </Typography>
                     <Typography
-                        variant="body2"
+                        variant="caption"
                         sx={{
                             fontFamily: 'monospace',
-                            fontSize: '0.85rem',
-                            lineHeight: 1.6,
-                            color: 'rgba(255, 255, 255, 0.85)',
+                            fontSize: '0.75rem',
+                            color: 'rgba(255, 255, 255, 0.7)',
                             whiteSpace: 'pre-wrap',
                             wordBreak: 'break-word',
                         }}

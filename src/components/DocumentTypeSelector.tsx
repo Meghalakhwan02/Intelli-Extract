@@ -13,7 +13,7 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import type { DocumentTypeSelectorProps, DocumentType } from '../types';
 
-const documentTypes: DocumentType[] = [
+export const documentTypes: DocumentType[] = [
     { id: 'passport', name: 'Passport', icon: 'passport' },
     { id: 'voterid', name: 'Voter ID', icon: 'voterid' },
     { id: 'domicile', name: 'Domicile', icon: 'domicile' },
@@ -25,7 +25,7 @@ const documentTypes: DocumentType[] = [
     { id: 'newpanform', name: 'New PAN Form', icon: 'newpanform' },
 ];
 
-const LANGUAGES = [
+export const LANGUAGES = [
     { value: 'english', label: 'English' },
     { value: 'hindi', label: 'Hindi (हिन्दी)' },
     { value: 'bengali', label: 'Bengali (বাংলা)' },
