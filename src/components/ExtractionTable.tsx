@@ -142,7 +142,7 @@ export default function ExtractionTable({ title, selectedType, data = [], isLoad
                             <TableRow>
                                 <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
                                     <Typography variant="caption" color="text.secondary" sx={{ opacity: 0.5 }}>
-                                        {selectedType ? 'Upload document' : 'Select type'}
+                                        {selectedType ? 'Upload document' : 'Select type and language'}
                                     </Typography>
                                 </TableCell>
                             </TableRow>

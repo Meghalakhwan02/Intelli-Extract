@@ -216,9 +216,9 @@ function App() {
                   },
                   backdropFilter: 'blur(10px)',
                 }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 800, letterSpacing: '0.02em', color: isComparisonReady ? 'inherit' : 'text.secondary' }}>
-                    {isVerifying ? 'Verifying Documents...' : (verificationSummary || 'Awaiting Document Uploads...')}
-                  </Typography>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800, letterSpacing: '0.02em', color: isComparisonReady ? 'inherit' : 'text.secondary' }}>
+                      {isVerifying ? 'Verifying Documents...' : (verificationSummary || 'Ready for Comparison: Upload Documents')}
+                    </Typography>
                 </Paper>
               </motion.div>
             </Box>

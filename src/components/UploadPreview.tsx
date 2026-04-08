@@ -178,10 +178,17 @@ export default function UploadPreview({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            style={{ textAlign: 'center', padding: '20px' }}
+                            style={{ 
+                                display: 'flex', 
+                                flexDirection: 'column', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                padding: '12px',
+                                gap: '8px'
+                            }}
                         >
-                            <CloudUploadIcon sx={{ fontSize: 60, color: 'rgba(255, 255, 255, 0.15)', mb: 1.5 }} />
-                            <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8, fontSize: '0.85rem' }}>
+                            <CloudUploadIcon sx={{ fontSize: { xs: 40, lg: 52 }, color: 'rgba(255, 255, 255, 0.2)', mb: 0.5 }} />
+                            <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8, fontSize: '0.8rem', fontWeight: 500, textAlign: 'center' }}>
                                 {isFixed ? `Upload ${title}` : 'Drop file or click to select'}
                             </Typography>
                         </motion.div>
