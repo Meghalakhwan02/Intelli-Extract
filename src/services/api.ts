@@ -6,9 +6,7 @@ const API_BASE_URL = "http://172.168.1.205:31192/api/v2"
 // const API_BASE_URL_V2 = "http://11.0.0.37:8000/api/v2";
 
 export const extractPan = async (
-  file: File,
-  docType: string,
-  language: string
+  file: File
 ): Promise<{ 
   results: ExtractionResult[], 
   rawText: string,
@@ -16,8 +14,6 @@ export const extractPan = async (
 }> => {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('doc_type', docType);
-  formData.append('language', language);
 
   const response = await fetch(`${API_BASE_URL}/extract`, {
     method: 'POST',

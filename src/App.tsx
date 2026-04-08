@@ -51,7 +51,7 @@ function App() {
     setIsPanProcessing(true);
     setError(null);
     try {
-      const result = await extractPan(file, 'string', selectedLanguage);
+      const result = await extractPan(file);
       setPanResults(result.results);
       setPanRawText(result.rawText);
       setPanExtractionsData(result.rawExtractions);
