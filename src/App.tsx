@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ThemeProvider, CssBaseline, Box, Container, Typography, Alert, Snackbar, Paper } from '@mui/material';
 import { theme } from './theme';
 import UploadPreview from './components/UploadPreview';
 import ExtractionTable from './components/ExtractionTable';
 import { motion } from 'framer-motion';
-import { verifyDocuments } from './services/api';
+import { extractPan, verifySecondary } from './services/api';
 import type { ExtractionResult } from './types';
 
 function App() {
   // Selection State
   const [selectedType, setSelectedType] = useState<string>('');
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('English');
 
   // Documents State
   const [panFile, setPanFile] = useState<File | null>(null);
@@ -22,8 +22,10 @@ function App() {
   const [panRawText, setPanRawText] = useState<string>('');
   const [docRawText, setDocRawText] = useState<string>('');
   const [verificationSummary, setVerificationSummary] = useState<string>('');
+  const [panExtractionsData, setPanExtractionsData] = useState<any>(null);
 
   // Processing State
+  const [isPanProcessing, setIsPanProcessing] = useState<boolean>(false);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
   const [error, setError] = useState<string | null>(null);
@@ -33,29 +35,68 @@ function App() {
     setDocFile(null);
     setDocResults([]);
     setDocRawText('');
+    setVerificationSummary('');
     setError(null);
   };
 
-  useEffect(() => {
-    if (panFile && docFile && selectedType && selectedLanguage) {
-      triggerVerification(panFile, docFile);
+  const handlePanFileSelect = async (file: File | null) => {
+    setPanFile(file);
+    if (!file) {
+      setPanResults([]);
+      setPanRawText('');
+      setPanExtractionsData(null);
+      return;
     }
-  }, [panFile, docFile, selectedType, selectedLanguage]);
 
-  const triggerVerification = async (pfile: File, dfile: File) => {
+    setIsPanProcessing(true);
+    setError(null);
+    try {
+      const result = await extractPan(file, 'string', selectedLanguage);
+      setPanResults(result.results);
+      setPanRawText(result.rawText);
+      setPanExtractionsData(result.rawExtractions);
+    } catch (err) {
+      console.error(err);
+      setError('PAN extraction failed. Please try again.');
+    } finally {
+      setIsPanProcessing(false);
+    }
+  };
+
+  const handleSecondaryFileSelect = async (file: File | null) => {
+    setDocFile(file);
+    if (!file) {
+      setDocResults([]);
+      setDocRawText('');
+      setVerificationSummary('');
+      return;
+    }
+
+    if (!panExtractionsData) {
+      setError('Please upload and process the PAN form first.');
+      return;
+    }
+
+    if (!selectedType) {
+      setError('Please select a document type first.');
+      return;
+    }
+
     setIsVerifying(true);
     setError(null);
     try {
-      const results = await verifyDocuments(pfile, dfile, selectedType, selectedLanguage);
-      setPanResults(results.panResults);
-      setDocResults(results.docResults);
-      setPanRawText(results.panRawText);
-      setDocRawText(results.docRawText);
-      setVerificationSummary(results.summary);
+      const result = await verifySecondary(
+        panExtractionsData,
+        file,
+        selectedType,
+        selectedLanguage
+      );
+      setDocResults(result.results);
+      setDocRawText(result.rawText);
+      setVerificationSummary(result.summary);
     } catch (err) {
       console.error(err);
       setError('Verification failed. Please check the backend connection.');
-      setVerificationSummary('Verification Failed');
     } finally {
       setIsVerifying(false);
     }
@@ -144,8 +185,8 @@ function App() {
                   selectedType="PAN"
                   selectedLanguage="English"
                   uploadedFile={panFile}
-                  onFileUpload={setPanFile}
-                  isProcessing={isVerifying}
+                  onFileUpload={handlePanFileSelect}
+                  isProcessing={isPanProcessing}
                 />
               </motion.div>
               <motion.div
@@ -161,7 +202,7 @@ function App() {
                   selectedLanguage={selectedLanguage}
                   onSelectLanguage={setSelectedLanguage}
                   uploadedFile={docFile}
-                  onFileUpload={setDocFile}
+                  onFileUpload={handleSecondaryFileSelect}
                   isProcessing={isVerifying}
                 />
               </motion.div>
@@ -176,7 +217,7 @@ function App() {
                     title="PAN Form Data"
                     selectedType="PAN"
                     data={panResults}
-                    isLoading={isVerifying}
+                    isLoading={isPanProcessing}
                     rawText={panRawText}
                   />
                 </Box>
@@ -189,6 +230,7 @@ function App() {
                     rawText={docRawText}
                   />
                 </Box>
+
               </Box>
 
               {/* Comparison Status Bar */}
@@ -203,11 +245,11 @@ function App() {
                   borderRadius: 1.25,
                   border: '1px solid rgba(99, 102, 241, 0.5)',
                   background: isComparisonReady 
-                    ? (verificationSummary.includes('not matched') && verificationSummary.includes(' matched'))
-                      ? 'linear-gradient(90deg, rgba(163, 230, 53, 0.1) 0%, rgba(163, 230, 53, 0.25) 50%, rgba(163, 230, 53, 0.1) 100%)' // Partial Match (Yellow-Green/Lime)
-                      : verificationSummary.includes('not matched')
-                        ? 'linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.25) 50%, rgba(239, 68, 68, 0.1) 100%)' // Failure (Red)
-                        : 'linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.3) 50%, rgba(16, 185, 129, 0.1) 100%)' // Full Success (Deep Green)
+                    ? (verificationSummary.toLowerCase().match(/not matched/g) || []).length === 0
+                      ? 'linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.3) 50%, rgba(16, 185, 129, 0.1) 100%)' // Full Success (Proper Green)
+                      : (verificationSummary.toLowerCase().match(/not matched/g) || []).length === 1
+                        ? 'linear-gradient(90deg, rgba(163, 230, 53, 0.1) 0%, rgba(163, 230, 53, 0.25) 50%, rgba(163, 230, 53, 0.1) 100%)' // Partial Match (Less Green/Lime)
+                        : 'linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.25) 50%, rgba(239, 68, 68, 0.1) 100%)' // Failure (Red)
                     : 'rgba(255, 255, 255, 0.03)',
                   boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.3)',
                   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',

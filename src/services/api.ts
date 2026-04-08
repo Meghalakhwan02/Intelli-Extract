@@ -1,53 +1,77 @@
-import type { UnifiedApiResponse, ExtractionResult } from '../types';
+import type { ExtractionResult } from '../types';
 
 
-const API_BASE_URL = "http://172.168.1.205:31192/api/v1/verify"
-// const API_BASE_URL = "http://11.0.0.37:8000/api/v1/verify";
+const API_BASE_URL = "http://172.168.1.205:31192/api/v2"
 
+// const API_BASE_URL_V2 = "http://11.0.0.37:8000/api/v2";
 
-export const verifyDocuments = async (
-  panFile: File, 
-  docFile: File, 
-  docType: string, 
+export const extractPan = async (
+  file: File,
+  docType: string,
   language: string
 ): Promise<{ 
-  panResults: ExtractionResult[], 
-  docResults: ExtractionResult[], 
-  panRawText: string,
-  docRawText: string,
+  results: ExtractionResult[], 
+  rawText: string,
+  rawExtractions: any 
+}> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('doc_type', docType);
+  formData.append('language', language);
+
+  const response = await fetch(`${API_BASE_URL}/extract`, {
+    method: 'POST',
+    headers: { 'accept': 'application/json' },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`PAN Extraction failed: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return {
+    results: transformExtractionBlock(data.extractions),
+    rawText: data.extractions?.M1?.raw_text || '',
+    rawExtractions: data.extractions
+  };
+};
+
+export const verifySecondary = async (
+  panExtractions: any,
+  docFile: File,
+  docType: string,
+  language: string
+): Promise<{ 
+  results: ExtractionResult[], 
+  rawText: string,
   summary: string 
 }> => {
   const formData = new FormData();
-  formData.append('pan_file', panFile);
+  formData.append('pan_extractions', JSON.stringify({ extractions: panExtractions }));
   formData.append('doc_file', docFile);
   formData.append('doc_type', docType);
   formData.append('language', language);
 
-  try {
-    const response = await fetch(`${API_BASE_URL}`, {
-      method: 'POST',
-      headers: { 'accept': 'application/json' },
-      body: formData,
-    });
+  const response = await fetch(`${API_BASE_URL}/verify`, {
+    method: 'POST',
+    headers: { 'accept': 'application/json' },
+    body: formData,
+  });
 
-    if (!response.ok) {
-      throw new Error(`Verification failed: ${response.statusText}`);
-    }
-
-    const data: UnifiedApiResponse = await response.json();
-    
-    return {
-      panResults: transformExtractionBlock(data.pan_extractions),
-      docResults: transformExtractionBlock(data.doc_extractions),
-      panRawText: data.pan_extractions?.M1?.raw_text || '',
-      docRawText: data.doc_extractions?.M1?.raw_text || '',
-      summary: data.verification?.summary || 'Verification Complete'
-    };
-  } catch (error) {
-    console.error('Verification request failed:', error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(`Verification failed: ${response.statusText}`);
   }
+
+  const data = await response.json();
+  
+  return {
+    results: transformExtractionBlock(data.doc_extractions),
+    rawText: data.doc_extractions?.M1?.raw_text || '',
+    summary: data.verification?.summary || 'Verification Complete'
+  };
 };
+
 
 const findValue = (obj: any, key: string) => {
   if (!obj) return undefined;
@@ -84,3 +108,4 @@ const transformExtractionBlock = (block: any): ExtractionResult[] => {
       };
     });
 };
+
