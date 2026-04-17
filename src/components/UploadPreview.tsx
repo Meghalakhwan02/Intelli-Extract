@@ -4,18 +4,16 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import type { UploadPreviewProps } from '../types';
 import { useRef } from 'react';
-import { LANGUAGES, documentTypes } from './DocumentTypeSelector';
+import { documentTypes } from './DocumentTypeSelector';
 
-export default function UploadPreview({ 
-    title, 
-    selectedType, 
+export default function UploadPreview({
+    title,
+    selectedType,
     onSelectType,
-    selectedLanguage, 
-    onSelectLanguage,
-    uploadedFile, 
-    onFileUpload, 
-    isProcessing = false, 
-    isFixed = false 
+    uploadedFile,
+    onFileUpload,
+    isProcessing = false,
+    isFixed = false
 }: UploadPreviewProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -46,42 +44,25 @@ export default function UploadPreview({
                 borderRadius: 1.25,
             }}
         >
-            <Typography variant="h6" gutterBottom sx={{ mb: 1.5, fontWeight: 700, fontSize: '1rem', color: 'primary.light' }}>
-                {title || 'Document Preview'}
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1rem', color: 'primary.light' }}>
+                    {title || 'Document Preview'}
+                </Typography>
 
-            {/* Selection Dropdowns for non-fixed docs */}
-            {!isFixed && (
-                <Box sx={{ display: 'flex', gap: 1, mb: 1.5 }}>
-                    <FormControl fullWidth size="small">
-                        <InputLabel sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>Language</InputLabel>
+                {!isFixed && (
+                    <FormControl size="small" sx={{ minWidth: 200, ml: 2 }}>
+                        <InputLabel id="doc-type-label" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>Doc Type</InputLabel>
                         <Select
-                            value={selectedLanguage}
-                            label="Language"
-                            onChange={(e) => onSelectLanguage?.(e.target.value)}
-                            sx={{
-                                borderRadius: 1.5,
-                                background: 'rgba(0,0,0,0.2)',
-                                fontSize: '0.85rem',
-                                '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.1)' }
-                            }}
-                        >
-                            {LANGUAGES.map(lang => (
-                                <MenuItem key={lang.value} value={lang.value} sx={{ fontSize: '0.85rem' }}>{lang.label}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-
-                    <FormControl fullWidth size="small">
-                        <InputLabel sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>Doc Type</InputLabel>
-                        <Select
+                            labelId="doc-type-label"
                             value={selectedType}
                             label="Doc Type"
                             onChange={(e) => onSelectType?.(e.target.value)}
                             sx={{
                                 borderRadius: 1.5,
                                 background: 'rgba(0,0,0,0.2)',
-                                fontSize: '0.85rem',
+                                fontSize: '0.75rem',
+                                height: 32,
+                                '.MuiSelect-select': { py: 0.5 }
                             }}
                         >
                             {documentTypes.map(type => (
@@ -89,8 +70,10 @@ export default function UploadPreview({
                             ))}
                         </Select>
                     </FormControl>
-                </Box>
-            )}
+                )}
+            </Box>
+
+            {/* Selection Dropdowns removed as per request */}
 
             {/* Preview Area */}
             <Box
@@ -147,14 +130,14 @@ export default function UploadPreview({
                                         }}
                                     />
                                     {/* Overlay label */}
-                                    <Box sx={{ 
-                                        position: 'absolute', 
-                                        top: 5, 
-                                        right: 5, 
-                                        background: 'rgba(239, 68, 68, 0.9)', 
-                                        color: 'white', 
-                                        px: 1, 
-                                        py: 0.25, 
+                                    <Box sx={{
+                                        position: 'absolute',
+                                        top: 5,
+                                        right: 5,
+                                        background: 'rgba(239, 68, 68, 0.9)',
+                                        color: 'white',
+                                        px: 1,
+                                        py: 0.25,
                                         borderRadius: 1,
                                         fontSize: '0.65rem',
                                         fontWeight: 800,
@@ -178,10 +161,10 @@ export default function UploadPreview({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            style={{ 
-                                display: 'flex', 
-                                flexDirection: 'column', 
-                                alignItems: 'center', 
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
                                 justifyContent: 'center',
                                 padding: '12px',
                                 gap: '8px'
@@ -200,20 +183,21 @@ export default function UploadPreview({
             <input
                 ref={fileInputRef}
                 type="file"
+                accept="image/*,application/pdf"
                 onChange={handleFileChange}
                 style={{ display: 'none' }}
                 disabled={isProcessing}
             />
-            <motion.div 
-                whileHover={{ scale: (isProcessing || (!isFixed && (!selectedType || !selectedLanguage))) ? 1 : 1.02 }} 
-                whileTap={{ scale: (isProcessing || (!isFixed && (!selectedType || !selectedLanguage))) ? 1 : 0.98 }}
+            <motion.div
+                whileHover={{ scale: isProcessing ? 1 : 1.02 }}
+                whileTap={{ scale: isProcessing ? 1 : 0.98 }}
             >
                 <Button
                     variant="contained"
                     fullWidth
                     startIcon={!isProcessing && <CloudUploadIcon />}
                     onClick={handleUploadClick}
-                    disabled={(!isFixed && (!selectedType || !selectedLanguage)) || isProcessing}
+                    disabled={isProcessing || (!isFixed && !selectedType)}
                     sx={{
                         py: 1,
                         borderRadius: 2,

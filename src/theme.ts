@@ -80,6 +80,11 @@ export const theme = createTheme({
                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                         borderColor: '#6366f1',
                     },
+                    '& input:-webkit-autofill': {
+                        WebkitBoxShadow: '0 0 0 1000px #1e293b inset !important',
+                        WebkitTextFillColor: '#f1f5f9 !important',
+                        transition: 'background-color 5000s ease-in-out 0s',
+                    },
                 },
             },
         },

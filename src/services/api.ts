@@ -1,70 +1,79 @@
-import type { ExtractionResult } from '../types';
+import type { ExtractionResult, PanFormData } from '../types';
 
 
-const API_BASE_URL = "http://172.168.1.205:31192/api/v2"
+const API_BASE_URL = "http://172.168.1.205:31192/api/v3"
+// const API_BASE_URL_V3 = "http://11.0.0.37:8090/api/v3"
 
-// const API_BASE_URL_V2 = "http://11.0.0.37:8000/api/v2";
+export const recordPanDetails = async (
+  data: PanFormData
+): Promise<{ success: boolean; record_id: string }> => {
+  const params = new URLSearchParams();
+  params.append('fullName', data.fullName);
+  params.append('gender', data.gender);
+  params.append('dob', data.dob);
+  params.append('address', data.address);
+  params.append('fatherName', data.fatherName);
 
-export const extractPan = async (
-  file: File
+  const response = await fetch(`${API_BASE_URL}/record`, {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: params.toString(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Record creation failed: ${response.statusText}`);
+  }
+
+  return await response.json();
+};
+
+export const analyzeDocument = async (
+  file: File,
+  docType: string,
+  recordId: string
 ): Promise<{ 
   results: ExtractionResult[], 
   rawText: string,
-  rawExtractions: any 
+  analyzedFileUrl: string 
 }> => {
   const formData = new FormData();
   formData.append('file', file);
-
-  const response = await fetch(`${API_BASE_URL}/extract`, {
-    method: 'POST',
-    headers: { 'accept': 'application/json' },
-    body: formData,
-  });
-
-  if (!response.ok) {
-    throw new Error(`PAN Extraction failed: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return {
-    results: transformExtractionBlock(data.extractions),
-    rawText: data.extractions?.M1?.raw_text || '',
-    rawExtractions: data.extractions
-  };
-};
-
-export const verifySecondary = async (
-  panExtractions: any,
-  docFile: File,
-  docType: string,
-  language: string
-): Promise<{ 
-  results: ExtractionResult[], 
-  rawText: string,
-  summary: string 
-}> => {
-  const formData = new FormData();
-  formData.append('pan_extractions', JSON.stringify({ extractions: panExtractions }));
-  formData.append('doc_file', docFile);
   formData.append('doc_type', docType);
-  formData.append('language', language);
+  formData.append('record_id', recordId);
 
-  const response = await fetch(`${API_BASE_URL}/verify`, {
+  const response = await fetch(`${API_BASE_URL}/analyze`, {
     method: 'POST',
     headers: { 'accept': 'application/json' },
     body: formData,
   });
 
   if (!response.ok) {
-    throw new Error(`Verification failed: ${response.statusText}`);
+    let errorMessage = `Analysis failed: ${response.statusText}`;
+    try {
+      const errorData = await response.json();
+      if (errorData.detail) {
+        // detail can be a string or an array of objects for validation errors
+        errorMessage = typeof errorData.detail === 'string' 
+          ? errorData.detail 
+          : JSON.stringify(errorData.detail);
+      }
+    } catch (e) {
+      // ignore parsing error if it's not JSON
+    }
+    throw new Error(errorMessage);
   }
 
   const data = await response.json();
   
+  // Transform the response according to the provided JSON structure
   return {
-    results: transformExtractionBlock(data.doc_extractions),
-    rawText: data.doc_extractions?.M1?.raw_text || '',
-    summary: data.verification?.summary || 'Verification Complete'
+    results: transformExtractionBlock(data.extractions),
+    rawText: data.extractions?.M1?.raw_text || '',
+    // Use annotated_image as provided in the JSON, adding the base64 prefix
+    analyzedFileUrl: data.annotated_image ? `data:image/png;base64,${data.annotated_image}` : '' 
   };
 };
 

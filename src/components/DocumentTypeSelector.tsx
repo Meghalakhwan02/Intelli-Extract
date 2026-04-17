@@ -10,7 +10,6 @@ import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import BoltIcon from '@mui/icons-material/Bolt';
 import LanguageIcon from '@mui/icons-material/Language';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import type { DocumentTypeSelectorProps, DocumentType } from '../types';
 
 export const documentTypes: DocumentType[] = [
@@ -22,7 +21,6 @@ export const documentTypes: DocumentType[] = [
     { id: 'waterbill', name: 'Water Bill', icon: 'waterbill' },
     { id: 'electricitybill', name: 'Electricity Bill', icon: 'electricitybill' },
     { id: 'rationcard', name: 'Ration Card', icon: 'rationcard' },
-    { id: 'newpanform', name: 'New PAN Form', icon: 'newpanform' },
 ];
 
 export const LANGUAGES = [
@@ -50,13 +48,12 @@ const getIcon = (iconType: string) => {
         case 'waterbill': return <WaterDropIcon />;
         case 'electricitybill': return <BoltIcon />;
         case 'rationcard': return <ContactPageIcon />;
-        case 'newpanform': return <AssignmentIndIcon />;
         default: return <DescriptionIcon />;
     }
 };
 
 export default function DocumentTypeSelector({
-    selectedType, onSelectType, selectedLanguage, onSelectLanguage
+    selectedType, onSelectType, selectedLanguage, onSelectLanguage, showLanguage = true
 }: DocumentTypeSelectorProps) {
     return (
         <Paper
@@ -71,66 +68,68 @@ export default function DocumentTypeSelector({
             }}
         >
             {/* Language Selector */}
-            <Box sx={{ mb: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                    <LanguageIcon sx={{ fontSize: 18, color: 'primary.main' }} />
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.7rem' }}>
-                        Language
-                    </Typography>
-                </Box>
-                <FormControl fullWidth size="small">
-                    <InputLabel
-                        id="lang-label"
-                        sx={{ color: 'text.secondary', '&.Mui-focused': { color: 'primary.main' } }}
-                    >
-                        Select Language
-                    </InputLabel>
-                    <Select
-                        labelId="lang-label"
-                        value={selectedLanguage}
-                        label="Select Language"
-                        onChange={(e) => onSelectLanguage(e.target.value)}
-                        sx={{
-                            borderRadius: 2,
-                            color: 'text.primary',
-                            background: 'rgba(0,0,0,0.2)',
-                            '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.12)' },
-                            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.light' },
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
-                            '.MuiSvgIcon-root': { color: 'text.secondary' },
-                        }}
-                        MenuProps={{
-                            PaperProps: {
-                                sx: {
-                                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%)',
-                                    border: '1px solid rgba(255,255,255,0.08)',
-                                    backdropFilter: 'blur(10px)',
-                                    maxHeight: 260,
-                                    '&::-webkit-scrollbar': { width: '2px' },
-                                    '&::-webkit-scrollbar-track': { background: 'transparent' },
-                                    '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.15)', borderRadius: '10px' },
-                                    '& .MuiMenuItem-root': {
-                                        fontSize: '0.875rem',
-                                        color: 'text.secondary',
-                                        '&:hover': { backgroundColor: 'rgba(99,102,241,0.12)', color: 'primary.main' },
-                                        '&.Mui-selected': {
-                                            backgroundColor: 'rgba(99,102,241,0.2)',
-                                            color: 'primary.main',
-                                            '&:hover': { backgroundColor: 'rgba(99,102,241,0.25)' },
+            {showLanguage && (
+                <Box sx={{ mb: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                        <LanguageIcon sx={{ fontSize: 18, color: 'primary.main' }} />
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.7rem' }}>
+                            Language
+                        </Typography>
+                    </Box>
+                    <FormControl fullWidth size="small">
+                        <InputLabel
+                            id="lang-label"
+                            sx={{ color: 'text.secondary', '&.Mui-focused': { color: 'primary.main' } }}
+                        >
+                            Select Language
+                        </InputLabel>
+                        <Select
+                            labelId="lang-label"
+                            value={selectedLanguage}
+                            label="Select Language"
+                            onChange={(e) => onSelectLanguage(e.target.value)}
+                            sx={{
+                                borderRadius: 2,
+                                color: 'text.primary',
+                                background: 'rgba(0,0,0,0.2)',
+                                '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.12)' },
+                                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.light' },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+                                '.MuiSvgIcon-root': { color: 'text.secondary' },
+                            }}
+                            MenuProps={{
+                                PaperProps: {
+                                    sx: {
+                                        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%)',
+                                        border: '1px solid rgba(255,255,255,0.08)',
+                                        backdropFilter: 'blur(10px)',
+                                        maxHeight: 260,
+                                        '&::-webkit-scrollbar': { width: '2px' },
+                                        '&::-webkit-scrollbar-track': { background: 'transparent' },
+                                        '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.15)', borderRadius: '10px' },
+                                        '& .MuiMenuItem-root': {
+                                            fontSize: '0.875rem',
+                                            color: 'text.secondary',
+                                            '&:hover': { backgroundColor: 'rgba(99,102,241,0.12)', color: 'primary.main' },
+                                            '&.Mui-selected': {
+                                                backgroundColor: 'rgba(99,102,241,0.2)',
+                                                color: 'primary.main',
+                                                '&:hover': { backgroundColor: 'rgba(99,102,241,0.25)' },
+                                            },
                                         },
                                     },
                                 },
-                            },
-                        }}
-                    >
-                        {LANGUAGES.map((lang) => (
-                            <MenuItem key={lang.value} value={lang.value}>{lang.label}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </Box>
+                            }}
+                        >
+                            {LANGUAGES.map((lang) => (
+                                <MenuItem key={lang.value} value={lang.value}>{lang.label}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+            )}
 
-            <Divider sx={{ borderColor: 'rgba(255,255,255,0.07)', mb: 2 }} />
+            {showLanguage && <Divider sx={{ borderColor: 'rgba(255,255,255,0.07)', mb: 2 }} />}
 
             {/* Document Type Header */}
             <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600, fontSize: '1rem', flexShrink: 0 }}>

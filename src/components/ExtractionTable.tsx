@@ -57,9 +57,9 @@ export default function ExtractionTable({ title, selectedType, data = [], isLoad
                 {title || 'Extraction Results'}
             </Typography>
 
-            <TableContainer sx={{ 
-                flex: 1, 
-                overflow: 'auto', 
+            <TableContainer sx={{
+                flex: 1,
+                overflow: 'auto',
                 mb: rawText ? 2 : 0,
                 '&::-webkit-scrollbar': { width: '4px' },
                 '&::-webkit-scrollbar-track': { background: 'transparent' },
@@ -113,11 +113,11 @@ export default function ExtractionTable({ title, selectedType, data = [], isLoad
                                         '& td': { borderBottom: '1px solid rgba(255,255,255,0.03)' }
                                     }}
                                 >
-                                    <TableCell sx={{ fontWeight: 600, fontSize: '0.8rem', py: 0.75, px: 1 }}>{row.attribute}</TableCell>
-                                    <TableCell sx={{ fontSize: '0.8rem', py: 0.75, px: 1 }}>{row.m1}</TableCell>
-                                    <TableCell sx={{ fontSize: '0.8rem', py: 0.75, px: 1 }}>{row.m2}</TableCell>
-                                    <TableCell sx={{ fontSize: '0.8rem', py: 0.75, px: 1 }}>{row.m3}</TableCell>
-                                    <TableCell align="center" sx={{ py: 0.75, px: 1 }}>
+                                    <TableCell sx={{ fontWeight: 600, fontSize: '0.875rem', py: 1, px: 1.5 }}>{row.attribute}</TableCell>
+                                    <TableCell sx={{ fontSize: '0.875rem', py: 1, px: 1.5 }}>{row.m1}</TableCell>
+                                    <TableCell sx={{ fontSize: '0.875rem', py: 1, px: 1.5 }}>{row.m2}</TableCell>
+                                    <TableCell sx={{ fontSize: '0.875rem', py: 1, px: 1.5 }}>{row.m3}</TableCell>
+                                    <TableCell align="center" sx={{ py: 1, px: 1.5 }}>
                                         <Box
                                             sx={{
                                                 display: 'inline-flex',
@@ -141,8 +141,8 @@ export default function ExtractionTable({ title, selectedType, data = [], isLoad
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
-                                    <Typography variant="caption" color="text.secondary" sx={{ opacity: 0.5 }}>
-                                        {selectedType ? 'Upload document' : 'Select type and language'}
+                                    <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.6, fontStyle: 'italic' }}>
+                                        {selectedType ? 'Please upload a document to view results' : 'Select a document type at the top-left'}
                                     </Typography>
                                 </TableCell>
                             </TableRow>
