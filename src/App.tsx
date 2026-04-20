@@ -61,7 +61,10 @@ function App() {
         extractionResults: response.results,
         rawText: response.rawText,
         docType: selectedType,
-        analyzedFileUrl: response.analyzedFileUrl
+        analyzedFileUrl: response.analyzedFileUrl,
+        m1_image: response.m1_image,
+        m2_image: response.m2_image,
+        m3_image: response.m3_image
       };
 
       setUploadedFiles(prev => [...prev, newDoc]);

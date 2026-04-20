@@ -2,6 +2,7 @@ import type { ExtractionResult, PanFormData } from '../types';
 
 
 const API_BASE_URL = "http://172.168.1.205:31192/api/v3"
+// const API_BASE_URL = "http://11.0.0.37:8090/api/v3"
 // const API_BASE_URL_V3 = "http://11.0.0.37:8090/api/v3"
 
 export const recordPanDetails = async (
@@ -37,7 +38,10 @@ export const analyzeDocument = async (
 ): Promise<{ 
   results: ExtractionResult[], 
   rawText: string,
-  analyzedFileUrl: string 
+  analyzedFileUrl: string,
+  m1_image: string,
+  m2_image: string,
+  m3_image: string
 }> => {
   const formData = new FormData();
   formData.append('file', file);
@@ -69,11 +73,16 @@ export const analyzeDocument = async (
   const data = await response.json();
   
   // Transform the response according to the provided JSON structure
+  const annotatedImages = data.annotated_images || {};
+  
   return {
     results: transformExtractionBlock(data.extractions),
     rawText: data.extractions?.M1?.raw_text || '',
-    // Use annotated_image as provided in the JSON, adding the base64 prefix
-    analyzedFileUrl: data.annotated_image ? `data:image/png;base64,${data.annotated_image}` : '' 
+    // Use M1 as default analyzedFileUrl
+    analyzedFileUrl: annotatedImages.M1 ? `data:image/png;base64,${annotatedImages.M1}` : '',
+    m1_image: annotatedImages.M1 ? `data:image/png;base64,${annotatedImages.M1}` : '',
+    m2_image: annotatedImages.M2 ? `data:image/png;base64,${annotatedImages.M2}` : '',
+    m3_image: annotatedImages.M3 ? `data:image/png;base64,${annotatedImages.M3}` : ''
   };
 };
 

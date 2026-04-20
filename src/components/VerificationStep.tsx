@@ -19,9 +19,22 @@ const VerificationStep: React.FC<VerificationStepProps> = ({
   onBack
 }) => {
   const [activeIdx, setActiveIdx] = React.useState(0);
+  const [activeModel, setActiveModel] = React.useState<'M1' | 'M2' | 'M3'>('M1');
+  
   const currentDoc = uploadedFiles[activeIdx];
   const currentFile = currentDoc ? currentDoc.file : null;
 
+  const getDocImageUrl = () => {
+    if (!currentDoc) return '';
+    let url = '';
+    if (activeModel === 'M1') url = currentDoc.m1_image || currentDoc.analyzedFileUrl || '';
+    else if (activeModel === 'M2') url = currentDoc.m2_image || '';
+    else if (activeModel === 'M3') url = currentDoc.m3_image || '';
+
+    if (url) return url;
+    if (currentFile) return URL.createObjectURL(currentFile);
+    return 'https://via.placeholder.com/800x1200?text=Processing+Document...';
+  };
 
   return (
     <Box
@@ -46,21 +59,43 @@ const VerificationStep: React.FC<VerificationStepProps> = ({
 
       {/* Main Content: Immersive Document Preview */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, minHeight: 0, alignItems: 'center' }}>
-        {/* Multi-Doc Switcher (Top) */}
-        {uploadedFiles.length > 1 && (
-          <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-            {uploadedFiles.map((_, i) => (
+        <Stack direction="row" spacing={2} sx={{ width: '100%', justifyContent: 'center', mb: 1 }}>
+          {/* Multi-Doc Switcher (Left) */}
+          {uploadedFiles.length > 1 && (
+            <Stack direction="row" spacing={1} sx={{ p: 0.5, bgcolor: 'rgba(255,255,255,0.05)', borderRadius: 2 }}>
+              {uploadedFiles.map((_, i) => (
+                <Chip
+                  key={i}
+                  label={`Doc ${i + 1}`}
+                  onClick={() => setActiveIdx(i)}
+                  color={activeIdx === i ? "primary" : "default"}
+                  variant={activeIdx === i ? "filled" : "outlined"}
+                  sx={{ cursor: 'pointer', fontWeight: 600 }}
+                />
+              ))}
+            </Stack>
+          )}
+
+          {/* Model Switcher (Right) */}
+          <Stack direction="row" spacing={1} sx={{ p: 0.5, bgcolor: 'rgba(255,255,255,0.05)', borderRadius: 2 }}>
+            {(['M1', 'M2', 'M3'] as const).map((model) => (
               <Chip
-                key={i}
-                label={`Document ${i + 1}`}
-                onClick={() => setActiveIdx(i)}
-                color={activeIdx === i ? "primary" : "default"}
-                variant={activeIdx === i ? "filled" : "outlined"}
-                sx={{ cursor: 'pointer' }}
+                key={model}
+                label={model}
+                onClick={() => setActiveModel(model)}
+                color={activeModel === model ? "secondary" : "default"}
+                variant={activeModel === model ? "filled" : "outlined"}
+                sx={{ 
+                  cursor: 'pointer', 
+                  minWidth: 60,
+                  fontWeight: 700,
+                  transition: 'all 0.2s',
+                  '&:hover': { transform: 'translateY(-1px)' }
+                }}
               />
             ))}
           </Stack>
-        )}
+        </Stack>
 
         <Paper
           elevation={4}
@@ -79,6 +114,24 @@ const VerificationStep: React.FC<VerificationStepProps> = ({
             boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
           }}
         >
+          {/* Badge indicator */}
+          <Box sx={{ 
+            position: 'absolute', 
+            top: 20, 
+            right: 15, 
+            zIndex: 10,
+            bgcolor: 'secondary.main',
+            color: 'white',
+            px: 1.5,
+            py: 0.5,
+            borderRadius: 1,
+            fontSize: '0.75rem',
+            fontWeight: 'bold',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+          }}>
+            MODEL: {activeModel}
+          </Box>
+
           {/* Enhanced Document Canvas */}
           <Box sx={{
             flex: 1,
@@ -89,12 +142,9 @@ const VerificationStep: React.FC<VerificationStepProps> = ({
             backgroundSize: 'contain',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            backgroundImage: currentDoc?.analyzedFileUrl 
-              ? `url("${currentDoc.analyzedFileUrl}")` 
-              : currentFile 
-                ? `url("${URL.createObjectURL(currentFile)}")` 
-                : 'url("https://via.placeholder.com/800x1200?text=Processing+Document...")',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+            backgroundImage: `url("${getDocImageUrl()}")`,
+            boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+            transition: 'background-image 0.3s ease-in-out'
           }}>
           </Box>
         </Paper>

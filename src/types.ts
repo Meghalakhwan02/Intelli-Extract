@@ -27,7 +27,10 @@ export interface UploadedDocument {
   extractionResults: ExtractionResult[];
   rawText: string;
   docType: string;
-  analyzedFileUrl?: string;
+  analyzedFileUrl?: string; // Kept for backward compatibility
+  m1_image?: string;
+  m2_image?: string;
+  m3_image?: string;
 }
 
 // API Response Types
