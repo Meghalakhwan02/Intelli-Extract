@@ -41,10 +41,11 @@ function App() {
       setError('Missing record ID from PAN details. Please complete step 1.');
       return;
     }
-    if (!selectedType) {
-      setError('Please select a Document Type from the dropdown before uploading.');
-      return;
-    }
+    // Doc type selection no longer required before upload
+    // if (!selectedType) {
+    //   setError('Please select a Document Type from the dropdown before uploading.');
+    //   return;
+    // }
 
     const newFile = files[files.length - 1];
     const newId = Math.random().toString(36).substr(2, 9);
@@ -53,7 +54,7 @@ function App() {
     setError(null);
     
     try {
-      const response = await analyzeDocument(newFile, selectedType, panFormData.recordId);
+      const response = await analyzeDocument(newFile, panFormData.recordId);
       
       const newDoc: UploadedDocument = {
         id: newId,

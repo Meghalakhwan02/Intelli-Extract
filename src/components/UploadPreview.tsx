@@ -49,6 +49,7 @@ export default function UploadPreview({
                     {title || 'Document Preview'}
                 </Typography>
 
+                {/* Doc type selector removed — no longer required before upload
                 {!isFixed && (
                     <FormControl size="small" sx={{ minWidth: 200, ml: 2 }}>
                         <InputLabel id="doc-type-label" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>Doc Type</InputLabel>
@@ -71,6 +72,7 @@ export default function UploadPreview({
                         </Select>
                     </FormControl>
                 )}
+                */}
             </Box>
 
             {/* Selection Dropdowns removed as per request */}
@@ -197,7 +199,7 @@ export default function UploadPreview({
                     fullWidth
                     startIcon={!isProcessing && <CloudUploadIcon />}
                     onClick={handleUploadClick}
-                    disabled={isProcessing || (!isFixed && !selectedType)}
+                    disabled={isProcessing}
                     sx={{
                         py: 1,
                         borderRadius: 2,

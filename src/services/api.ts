@@ -33,7 +33,6 @@ export const recordPanDetails = async (
 
 export const analyzeDocument = async (
   file: File,
-  docType: string,
   recordId: string
 ): Promise<{ 
   results: ExtractionResult[], 
@@ -44,8 +43,8 @@ export const analyzeDocument = async (
   m3_image: string
 }> => {
   const formData = new FormData();
-  formData.append('file', file);
-  formData.append('doc_type', docType);
+  formData.append('doc_file', file);
+  // formData.append('doc_type', docType); // doc_type dependency removed
   formData.append('record_id', recordId);
 
   const response = await fetch(`${API_BASE_URL}/analyze`, {
