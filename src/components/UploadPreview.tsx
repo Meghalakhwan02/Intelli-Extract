@@ -1,15 +1,12 @@
-import { Box, Paper, Typography, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, Paper, Typography, Button} from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import type { UploadPreviewProps } from '../types';
 import { useRef } from 'react';
-import { documentTypes } from './DocumentTypeSelector';
 
 export default function UploadPreview({
     title,
-    selectedType,
-    onSelectType,
     uploadedFile,
     onFileUpload,
     isProcessing = false,
