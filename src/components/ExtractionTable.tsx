@@ -101,7 +101,7 @@ export default function ExtractionTable({ title, selectedType, data = [], isLoad
                                 </TableCell>
                             </TableRow>
                         ) : data && data.length > 0 ? (
-                            data.map((row, index) => (
+                            data.filter(row => row.attribute !== 'raw_text').map((row, index) => (
                                 <TableRow
                                     key={row.attribute}
                                     component={motion.tr}

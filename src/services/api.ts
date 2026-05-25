@@ -105,6 +105,7 @@ const transformExtractionBlock = (block: any): ExtractionResult[] => {
   const { confidence_matrix, M1, M2, M3 } = block;
 
   return Object.keys(confidence_matrix)
+    .filter(key => key !== 'raw_text')
     .map(key => {
       const score = confidence_matrix[key].consensus_score;
 
