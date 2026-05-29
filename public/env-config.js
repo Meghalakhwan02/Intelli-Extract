@@ -1,3 +1,3 @@
 window.__ENV__ = {
-    VITE_API_BASE_URL: "http://172.168.1.205:31192/api/v3"
+    VITE_API_BASE_URL: "http://11.0.0.22:8000/api/v3"
 }
