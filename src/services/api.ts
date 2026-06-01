@@ -2,7 +2,7 @@ import type { ExtractionResult, PanFormData } from '../types';
 
 // http://11.0.0.22:8000/api/v3/record
 // const API_BASE_URL = "http://172.168.1.205:31192/api/v3"
-const API_BASE_URL = "http://11.0.0.22:8000/api/v3"
+const API_BASE_URL = "http://modelcmpr-teamsync.apps.lab.ocp.lan/api/v3"
 // const API_BASE_URL_V3 = "http://11.0.0.37:8090/api/v3"
 
 export const recordPanDetails = async (
