@@ -18,4 +18,5 @@ module.exports = {
   },
   testMatch: ['<rootDir>/src/__tests__/**/*.{test,spec}.{ts,tsx}'],
   testPathIgnorePatterns: ['/node_modules/'],
+  coverageDirectory: 'coverage',
 }
